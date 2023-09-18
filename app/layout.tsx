@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800"] });
 
 export const metadata: Metadata = {
     title: "Musigroove",

@@ -1,4 +1,5 @@
 "use client";
+import { EditorPopover } from "@/components/EditorPopover";
 import {
     BackwardFiveIcon,
     ForwardFiveIcon,
@@ -20,89 +21,131 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import useSpotify from "@/hooks/useSpotify";
 import { SpotifySDK } from "@/types/types";
-import { ExitIcon, PlayIcon } from "@radix-ui/react-icons";
+
+import {
+    CountdownTimerIcon,
+    Cross1Icon,
+    Cross2Icon,
+    CrossCircledIcon,
+    Crosshair1Icon,
+    DotsVerticalIcon,
+    ExitIcon,
+    LapTimerIcon,
+    LoopIcon,
+    PlayIcon,
+    PlusIcon,
+    StopIcon,
+    SunIcon,
+    TimerIcon,
+} from "@radix-ui/react-icons";
+import { Scopes } from "@spotify/web-api-ts-sdk";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
-    // const sdk = useSpotify(
-    //     process.env.NEXT_PUBLIC_SPOTIFY_ID!,
-    //     process.env.NEXT_PUBLIC_REDIRECT_TARGET!,
-    //     Scopes.all
-    // );
+    const sdk = useSpotify(
+        process.env.NEXT_PUBLIC_SPOTIFY_ID!,
+        process.env.NEXT_PUBLIC_REDIRECT_TARGET!,
+        Scopes.all
+    );
 
-    // if (sdk) {
-    return (
-        <div className="p-2">
-            {/* <SpotifyProfile sdk={sdk} /> */}
-            <div className="mx-auto flex justify-end">
-                <ModeToggle />
+    if (sdk) {
+        return (
+            <div className="p-2 ">
+                <div className="mx-auto flex  justify-end">
+                    <ModeToggle />
+                </div>
+                <div className="flex gap-8 p-4">
+                    <SpotifyPlayer />
+                    <StampCard />
+                    <SpotifyProfile sdk={sdk} />
+
+                    {/* <SpotifyProfile sdk={sdk} /> */}
+                    {/* <Logout sdk={sdk} /> */}
+                </div>
             </div>
-            <Card className="max-w-sm">
-                <CardHeader>
-                    <CardTitle>Music Player</CardTitle>
-                    <CardDescription></CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex gap-6 ">
-                        <Image
-                            src="https://picsum.photos/100"
-                            alt="Track Cover"
-                            className="shrink-0 self-start"
-                            width={100}
-                            height={100}
-                        />
+        );
+    }
+    return <></>;
+}
 
-                        <div className="">
-                            <p className="text-lg font-medium leading-none">I Like Dat</p>
-                            <p className="mt-2.5 text-sm text-muted-foreground">T-pain Kehlani</p>
-                            <Button variant="secondary" className="mt-3">
-                                <SpotifyIcon className="mr-2 h-4 w-4" /> Open Spotify
-                            </Button>
-                        </div>
-                    </div>
+const StampCard = () => {
+    return (
+        <Card className="max-w-sm">
+            <CardHeader className="">
+                <CardTitle className="h-4 flex justify-between items-center">
+                    Stamps
+                    <EditorPopover />
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="flex max-h-[28rem] gap-3  flex-wrap overflow-scroll ">
+                <Stamp time={"0:00"} label={"Starting"} />
+                <Stamp time={"0:30"} label={"asfasfs"} />
+                <Stamp time={"0:30"} label={"asfasfs"} />
+                <Stamp time={"0:30"} label={"asfasfs"} />
+                <Stamp time={"0:30"} label={"asfasfs"} />
+                <Stamp time={"0:30"} label={"asfasfs"} />
+                <Stamp time={"0:56"} />
+                <Stamp time={"1:10"} />
+                <Stamp time={"1:10"} />
+                <Stamp time={"1:10"} />
+                <Stamp time={"1:54"} />
+            </CardContent>
+        </Card>
+    );
+};
 
-                    <div className="mt-9 space-y-2">
-                        <Slider className="" defaultValue={[33]} max={100} step={1} />
-                        <span className="float-left text-muted-foreground text-sm">1:20</span>
-                        <span className="float-right text-muted-foreground text-sm ">3:34</span>
-                    </div>
-
-                    <div className="flex mt-8 items-center justify-center">
-                        <Button
-                            variant={"ghost"}
-                            size={"icon"}
-                            className="w-12 h-12 shrink-0 mr-8 "
-                        >
-                            <BackwardFiveIcon className="fill-slate-400 " />
-                        </Button>
-                        <Button variant={"ghost"} size={"icon"} className="w-12 h-12">
-                            <SkipTrackIcon className="rotate-180 fill-slate-500 dark:fill-slate-50" />
-                        </Button>
-                        <Button variant={"ghost"} size={"icon"} className="w-16 h-16">
-                            <PlayTrackIcon className="w-14 h-14" />
-                        </Button>
-                        <Button variant={"ghost"} size={"icon"} className="w-12 h-12">
-                            <SkipTrackIcon className="fill-slate-500 dark:fill-slate-50" />
-                        </Button>
-
-                        <Button variant={"ghost"} size={"icon"} className="w-12 shrink-0 h-12 ml-8">
-                            <ForwardFiveIcon className=" fill-slate-400" />
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-            {/* <SpotifyPlayer sdk={sdk} /> */}
-            {/* <Logout sdk={sdk} /> */}
+const Stamp = ({ time, label }: { time: string; label?: string }) => {
+    return (
+        <div className="p-2 w-full border-secondary flex items-center gap-4 border shadow-sm rounded-md">
+            <Button className="sm:w-24 w-20 text-xs">
+                <TimerIcon className="w-4 h-4 mr-2" /> {time}
+            </Button>
+            <span className=" text-muted">|</span>
+            <span className="text-xs sm:text-sm font-light text-muted-foreground"> {label}</span>
+            <div className="ml-auto">
+                <StampOptionToggle />
+            </div>
         </div>
     );
-    // }
-    // return <></>;
+};
+
+// const StampEditor = () => {
+//     return (
+
+//     )
+// }
+
+export function StampOptionToggle({}) {
+    // const { setTheme } = useTheme();
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="" size="icon">
+                    <DotsVerticalIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => console.log("edit")}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => console.log("delete")}>Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
 }
 
 const Logout = ({ sdk }: SpotifySDK) => {

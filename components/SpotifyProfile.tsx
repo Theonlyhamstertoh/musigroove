@@ -30,9 +30,9 @@ export function SpotifyProfile({ sdk }: SpotifySDK) {
 
     return (
         profile && (
-            <Card className="w-[350px]">
+            <Card className="max-w-sm self-start">
                 <CardHeader>
-                    <CardTitle>Account Details</CardTitle>
+                    <CardTitle>Spotify Account Details</CardTitle>
                     <CardDescription>You Spotify authentication was successful</CardDescription>
                 </CardHeader>
                 <CardContent>
