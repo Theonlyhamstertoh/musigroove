@@ -1,10 +1,12 @@
 "use client";
 
+import { SpotifyIcon } from "@/components/Icons";
 import { ModeToggle } from "@/components/ModeToggle";
 import { SpotifyPlayer } from "@/components/SpotifyPlayer";
 import { SpotifyProfile } from "@/components/SpotifyProfile";
 import { StampCard } from "@/components/StampCard";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import {
     DropdownMenu,
@@ -12,7 +14,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/use-toast";
 import useSpotify from "@/hooks/useSpotify";
+import { useSpotifyStore } from "@/hooks/useStore";
 import { SpotifySDK } from "@/types/types";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { Scopes, SpotifyApi } from "@spotify/web-api-ts-sdk";
@@ -24,14 +28,22 @@ export default function Home() {
     //     process.env.NEXT_PUBLIC_REDIRECT_TARGET!,
     //     Scopes.all
     // );
+    const [sdk, setSDK, isPremiumAccount] = useSpotifyStore((state) => [
+        state.sdk,
+        state.setSDK,
+        state.isPremiumAccount,
+    ]);
 
-    const sdk = SpotifyApi.withUserAuthorization(
-        process.env.NEXT_PUBLIC_SPOTIFY_ID!,
-        process.env.NEXT_PUBLIC_REDIRECT_TARGET!,
-        Scopes.all
-    );
+    if (sdk && isPremiumAccount === false) {
+        return (
+            <div className="w-full h-full flex items-center justify-center">
+                Sorry, you need Spotify Preimum to use Musigroove
+                <Logout sdk={sdk!} />
+            </div>
+        );
+    }
 
-    if (sdk) {
+    if (sdk && isPremiumAccount) {
         return (
             <div className="p-2 ">
                 <div className="bg-secondary w-full text-center  text-primary p-2 rounded-lg">
@@ -40,6 +52,11 @@ export default function Home() {
                 <Button
                     onClick={async () => {
                         console.log(await sdk.player.getCurrentlyPlayingTrack());
+                        const devices = await sdk.player.getAvailableDevices();
+
+                        await sdk.player.seekToPosition(10000, devices.devices[0].id!);
+
+                        //         setDeviceId(devices.devices);
                     }}
                 >
                     Sign In
@@ -58,7 +75,31 @@ export default function Home() {
             </div>
         );
     }
-    return <></>;
+    return (
+        <div className="flex justify-center items-center h-full">
+            <Card className="">
+                <CardHeader>
+                    <CardTitle>Login</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Button
+                        onClick={async () => {
+                            if ((await setSDK()) === false) {
+                                toast({
+                                    variant: "destructive",
+                                    title: "Uh oh! Something went wrong.",
+                                    description: "There was a problem with your request.",
+                                });
+                            }
+                        }}
+                        variant="secondary"
+                    >
+                        <SpotifyIcon className="mr-2" /> Sign in to Spotify
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+    );
 }
 
 const Logout = ({ sdk }: SpotifySDK) => {

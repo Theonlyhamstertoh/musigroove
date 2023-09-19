@@ -1,5 +1,6 @@
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { create } from "zustand";
+import initializeSpotify from "./useSpotify";
 
 interface StampState {
     timestamps: Timestamp[];
@@ -17,10 +18,26 @@ interface Timestamp {
 
 interface SpotifyState {
     sdk: SpotifyApi | null;
+    isPremiumAccount: boolean;
+    setSDK: () => Promise<boolean>;
+    setAccountType: (value: boolean) => void;
+    resetSDK: () => void;
 }
 export const useSpotifyStore = create<SpotifyState>()((set, get) => ({
     sdk: null,
-    // setSDK:
+    isPremiumAccount: false,
+    setAccountType: async (value) => set((state) => ({ isPremiumAccount: value })),
+    setSDK: async () => {
+        const sdk = await initializeSpotify();
+        if (sdk) {
+            const profile = await sdk.currentUser.profile();
+            const isPremiumAccount = profile.product === "premium" ? true : false;
+            set(() => ({ sdk: sdk, isPremiumAccount }));
+        }
+        return sdk ? true : false;
+    },
+
+    resetSDK: () => set(() => ({ sdk: null })),
 }));
 export const useStampStore = create<StampState>()((set, get) => ({
     timestamps: [],
