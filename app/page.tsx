@@ -34,6 +34,9 @@ export default function Home() {
     if (sdk) {
         return (
             <div className="p-2 ">
+                <div className="bg-secondary w-full text-center  text-primary p-2 rounded-lg">
+                    In Development
+                </div>
                 <div className="mx-auto flex  justify-end">
                     <ModeToggle />
                 </div>
@@ -52,11 +55,11 @@ export default function Home() {
 }
 
 const Logout = ({ sdk }: SpotifySDK) => {
-    useEffect(() => {
-        (async () => {
-            console.log(await sdk.player.getCurrentlyPlayingTrack());
-        })();
-    }, [sdk]);
+    // useEffect(() => {
+    //     (async () => {
+    //         console.log(await sdk.player.getCurrentlyPlayingTrack());
+    //     })();
+    // }, [sdk]);
 
     return (
         <>
