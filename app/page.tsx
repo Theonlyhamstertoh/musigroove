@@ -1,62 +1,31 @@
 "use client";
-import { EditorPopover } from "@/components/EditorPopover";
-import {
-    BackwardFiveIcon,
-    ForwardFiveIcon,
-    PlayTrackIcon,
-    SkipTrackIcon,
-    SpotifyIcon,
-} from "@/components/Icons";
+
 import { ModeToggle } from "@/components/ModeToggle";
 import { SpotifyPlayer } from "@/components/SpotifyPlayer";
 import { SpotifyProfile } from "@/components/SpotifyProfile";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { StampCard } from "@/components/StampCard";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import useSpotify from "@/hooks/useSpotify";
 import { SpotifySDK } from "@/types/types";
-
-import {
-    CountdownTimerIcon,
-    Cross1Icon,
-    Cross2Icon,
-    CrossCircledIcon,
-    Crosshair1Icon,
-    DotsVerticalIcon,
-    ExitIcon,
-    LapTimerIcon,
-    LoopIcon,
-    PlayIcon,
-    PlusIcon,
-    StopIcon,
-    SunIcon,
-    TimerIcon,
-} from "@radix-ui/react-icons";
-import { Scopes } from "@spotify/web-api-ts-sdk";
-
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { Scopes, SpotifyApi } from "@spotify/web-api-ts-sdk";
+import { useEffect } from "react";
 
 export default function Home() {
-    const sdk = useSpotify(
+    // const sdk = useSpotify(
+    //     process.env.NEXT_PUBLIC_SPOTIFY_ID!,
+    //     process.env.NEXT_PUBLIC_REDIRECT_TARGET!,
+    //     Scopes.all
+    // );
+
+    const sdk = SpotifyApi.withUserAuthorization(
         process.env.NEXT_PUBLIC_SPOTIFY_ID!,
         process.env.NEXT_PUBLIC_REDIRECT_TARGET!,
         Scopes.all
@@ -71,10 +40,10 @@ export default function Home() {
                 <div className="flex gap-8 p-4">
                     <SpotifyPlayer />
                     <StampCard />
-                    <SpotifyProfile sdk={sdk} />
+                    {/* <SpotifyProfile sdk={sdk} /> */}
 
                     {/* <SpotifyProfile sdk={sdk} /> */}
-                    {/* <Logout sdk={sdk} /> */}
+                    <Logout sdk={sdk} />
                 </div>
             </div>
         );
@@ -82,78 +51,12 @@ export default function Home() {
     return <></>;
 }
 
-const StampCard = () => {
-    return (
-        <Card className="max-w-sm">
-            <CardHeader className="">
-                <CardTitle className="h-4 flex justify-between items-center">
-                    Stamps
-                    <EditorPopover />
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="flex max-h-[28rem] gap-3  flex-wrap overflow-scroll ">
-                <Stamp time={"0:00"} label={"Starting"} />
-                <Stamp time={"0:30"} label={"asfasfs"} />
-                <Stamp time={"0:30"} label={"asfasfs"} />
-                <Stamp time={"0:30"} label={"asfasfs"} />
-                <Stamp time={"0:30"} label={"asfasfs"} />
-                <Stamp time={"0:30"} label={"asfasfs"} />
-                <Stamp time={"0:56"} />
-                <Stamp time={"1:10"} />
-                <Stamp time={"1:10"} />
-                <Stamp time={"1:10"} />
-                <Stamp time={"1:54"} />
-            </CardContent>
-        </Card>
-    );
-};
-
-const Stamp = ({ time, label }: { time: string; label?: string }) => {
-    return (
-        <div className="p-2 w-full border-secondary flex items-center gap-4 border shadow-sm rounded-md">
-            <Button className="sm:w-24 w-20 text-xs">
-                <TimerIcon className="w-4 h-4 mr-2" /> {time}
-            </Button>
-            <span className=" text-muted">|</span>
-            <span className="text-xs sm:text-sm font-light text-muted-foreground"> {label}</span>
-            <div className="ml-auto">
-                <StampOptionToggle />
-            </div>
-        </div>
-    );
-};
-
-// const StampEditor = () => {
-//     return (
-
-//     )
-// }
-
-export function StampOptionToggle({}) {
-    // const { setTheme } = useTheme();
-
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="" size="icon">
-                    <DotsVerticalIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => console.log("edit")}>Edit</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => console.log("delete")}>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-}
-
 const Logout = ({ sdk }: SpotifySDK) => {
-    // useEffect(() => {
-    //     (async () => {
-    //         sdk.logOut();
-    //     })();
-    // }, [sdk]);
+    useEffect(() => {
+        (async () => {
+            console.log(await sdk.player.getCurrentlyPlayingTrack());
+        })();
+    }, [sdk]);
 
     return (
         <>
