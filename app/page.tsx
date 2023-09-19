@@ -37,7 +37,13 @@ export default function Home() {
                 <div className="bg-secondary w-full text-center  text-primary p-2 rounded-lg">
                     In Development
                 </div>
-                <Button onClick={() => console.log(sdk)}>Sign In</Button>
+                <Button
+                    onClick={async () => {
+                        console.log(await sdk.player.getCurrentlyPlayingTrack());
+                    }}
+                >
+                    Sign In
+                </Button>
                 <div className="mx-auto flex  justify-end">
                     <ModeToggle />
                 </div>
