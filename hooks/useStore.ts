@@ -23,6 +23,7 @@ interface SpotifyState {
     setAccountType: (value: boolean) => void;
     resetSDK: () => void;
 }
+
 export const useSpotifyStore = create<SpotifyState>()((set, get) => ({
     sdk: null,
     isPremiumAccount: false,
@@ -39,6 +40,17 @@ export const useSpotifyStore = create<SpotifyState>()((set, get) => ({
 
     resetSDK: () => set(() => ({ sdk: null })),
 }));
+
+interface YoutubeState {
+    videoId: string;
+    setVideoId: (id: string) => void;
+}
+
+export const useYoutubeStore = create<YoutubeState>()((set, get) => ({
+    videoId: "",
+    setVideoId: (id) => set(() => ({ videoId: id })),
+}));
+
 export const useStampStore = create<StampState>()((set, get) => ({
     timestamps: [],
     addStamp: (stamp) => set((state) => ({ timestamps: [...state.timestamps, stamp] })),

@@ -9,16 +9,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/
 import { Button } from "./ui/button";
 import {
     BackwardFiveIcon,
+    BackwardTenIcon,
     ForwardFiveIcon,
+    ForwardTenIcon,
+    PauseTrackIcon,
     PlayTrackIcon,
     SkipTrackIcon,
     SpotifyIcon,
 } from "./Icons";
 import { Slider } from "./ui/slider";
+import { formatTime } from "@/lib/utils";
+import { Progress } from "./ui/progress";
+import { getRandomValues } from "crypto";
 
-export const SpotifyPlayer = () => {
+export const SpotifyPlayer = ({
+    start,
+    jumpTo,
+    playMode,
+    end,
+    elapsed,
+    seekTo,
+    handlePlayMode,
+}: any) => {
+    const [scrub, setScrub] = useState(false);
     return (
-        <Card className="max-w-sm self-start">
+        <Card
+            className="max-w-sm min-w-fit self-start"
+            onTouchStart={() => setScrub(true)}
+            onMouseOver={() => setScrub(true)}
+            onTouchEnd={() => setScrub(false)}
+            onMouseOut={() => setScrub(false)}
+        >
             <CardHeader>
                 <CardTitle className="">Music Player</CardTitle>
                 {/* <CardDescription></CardDescription> */}
@@ -37,34 +58,80 @@ export const SpotifyPlayer = () => {
                         <p className="text-lg font-medium leading-none">I Like Dat</p>
                         <p className="mt-2.5 text-sm text-muted-foreground">T-pain Kehlani</p>
                         <Button variant="secondary" className="mt-3">
-                            <SpotifyIcon className="mr-2 h-4 w-4" /> Open Spotify
+                            <SpotifyIcon className="mr-2 h-4 w-4" /> Open Youtube
                         </Button>
                     </div>
                 </div>
 
-                <div className="mt-9 space-y-2">
-                    <Slider className="" defaultValue={[33]} max={100} step={1} />
-                    <span className="float-left text-muted-foreground text-sm">1:20</span>
-                    <span className="float-right text-muted-foreground text-sm ">3:34</span>
+                <div className="mt-9 h-6 space-y-2">
+                    {scrub && (
+                        <Slider
+                            className="h-2 cursor-grab"
+                            defaultValue={[elapsed]}
+                            max={end}
+                            step={1}
+                            // ref={sliderRef}
+                            // key={crypto.randomUUID()}
+                            onValueChange={(value: number[]) => jumpTo(value[0])}
+                        />
+                    )}
+                    {!scrub && <Progress value={(elapsed / end) * 100} />}
+                    <span className="float-left text-muted-foreground text-sm">
+                        {formatTime(elapsed)}
+                    </span>
+                    <span className="float-right text-muted-foreground text-sm ">
+                        {formatTime(end)}
+                    </span>
                 </div>
 
                 <div className="flex mt-8 items-center justify-center">
-                    <Button variant={"ghost"} size={"icon"} className="w-12 h-12 shrink-0 mr-8 ">
-                        <BackwardFiveIcon className="fill-slate-400 " />
+                    <Button
+                        onClick={() => seekTo(-10)}
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="w-12 shrink-0 h-12"
+                    >
+                        <BackwardTenIcon className=" stroke-slate-400" />
                     </Button>
-                    <Button variant={"ghost"} size={"icon"} className="w-12 h-12">
+                    <Button
+                        onClick={() => seekTo(-5)}
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="w-12 h-12 shrink-0"
+                    >
+                        <BackwardFiveIcon className="stroke-slate-400 " />
+                    </Button>
+                    {/* <Button variant={"ghost"} size={"icon"} className="w-12 h-12">
                         <SkipTrackIcon className="rotate-180 fill-slate-500 dark:fill-slate-50" />
+                    </Button> */}
+                    <Button
+                        onClick={handlePlayMode}
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="w-16 h-16"
+                    >
+                        {playMode && <PauseTrackIcon className="w-14 h-14 fill-primary" />}
+                        {!playMode && <PlayTrackIcon className="w-14 h-14 fill-primary" />}
                     </Button>
-                    <Button variant={"ghost"} size={"icon"} className="w-16 h-16">
-                        <PlayTrackIcon className="w-14 h-14" />
+                    <Button
+                        onClick={() => seekTo(5)}
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="w-12 shrink-0 h-12"
+                    >
+                        <ForwardFiveIcon className=" stroke-slate-400" />
                     </Button>
-                    <Button variant={"ghost"} size={"icon"} className="w-12 h-12">
+                    <Button
+                        onClick={() => seekTo(10)}
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="w-12 shrink-0 h-12"
+                    >
+                        <ForwardTenIcon className=" stroke-slate-400" />
+                    </Button>
+                    {/* <Button variant={"ghost"} size={"icon"} className="w-12 h-12">
                         <SkipTrackIcon className="fill-slate-500 dark:fill-slate-50" />
-                    </Button>
-
-                    <Button variant={"ghost"} size={"icon"} className="w-12 shrink-0 h-12 ml-8">
-                        <ForwardFiveIcon className=" fill-slate-400" />
-                    </Button>
+                    </Button> */}
                 </div>
             </CardContent>
         </Card>

@@ -6,6 +6,7 @@ import { SpotifyPlayer } from "@/components/SpotifyPlayer";
 import { SpotifyProfile } from "@/components/SpotifyProfile";
 import { StampCard } from "@/components/StampCard";
 import { Button } from "@/components/ui/button";
+import Youtube, { YouTubeProps } from "react-youtube";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import {
@@ -20,84 +21,200 @@ import { useSpotifyStore } from "@/hooks/useStore";
 import { SpotifySDK } from "@/types/types";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { Scopes, SpotifyApi } from "@spotify/web-api-ts-sdk";
-import { useEffect } from "react";
+import { LegacyRef, use, useEffect, useRef, useState } from "react";
+import { Options, YouTubePlayer } from "youtube-player/dist/types";
+// youtube('v3').
+// export default function Home() {
+//     // const sdk = useSpotify(
+//     //     process.env.NEXT_PUBLIC_SPOTIFY_ID!,
+//     //     process.env.NEXT_PUBLIC_REDIRECT_TARGET!,
+//     //     Scopes.all
+//     // );
+
+//     const [sdk, setSDK, isPremiumAccount] = useSpotifyStore((state) => [
+//         state.sdk,
+//         state.setSDK,
+//         state.isPremiumAccount,
+//     ]);
+
+//     if (sdk && isPremiumAccount === false) {
+//         return (
+//             <div className="w-full h-full flex items-center justify-center">
+//                 Sorry, you need Spotify Preimum to use Musigroove
+//                 <Logout sdk={sdk!} />
+//             </div>
+//         );
+//     }
+
+//     if (sdk && isPremiumAccount) {
+//         return (
+//             <div className="p-2 ">
+//                 <div className="bg-secondary w-full text-center  text-primary p-2 rounded-lg">
+//                     In Development
+//                 </div>
+//                 <Button
+//                     onClick={async () => {
+//                         console.log(await sdk.player.getCurrentlyPlayingTrack());
+//                         const devices = await sdk.player.getAvailableDevices();
+
+//                         await sdk.player.seekToPosition(10000, devices.devices[0].id!);
+
+//                         //         setDeviceId(devices.devices);
+//                     }}
+//                 >
+//                     Sign In
+//                 </Button>
+//                 <div className="mx-auto flex  justify-end">
+//                     <ModeToggle />
+//                 </div>
+//                 <div className="flex gap-8 p-4">
+//                     <SpotifyPlayer />
+//                     <StampCard />
+//                     {/* <SpotifyProfile sdk={sdk} /> */}
+
+//                     {/* <SpotifyProfile sdk={sdk} /> */}
+//                     <Logout sdk={sdk} />
+//                 </div>
+//             </div>
+//         );
+//     }
+//     return (
+//         <div className="flex justify-center items-center h-full">
+//             <Card className="">
+//                 <CardHeader>
+//                     <CardTitle>Login</CardTitle>
+//                 </CardHeader>
+//                 <CardContent>
+//                     <Button
+//                         onClick={async () => {
+//                             if ((await setSDK()) === false) {
+//                                 toast({
+//                                     variant: "destructive",
+//                                     title: "Uh oh! Something went wrong.",
+//                                     description: "There was a problem with your request.",
+//                                 });
+//                             }
+//                         }}
+//                         variant="secondary"
+//                     >
+//                         <SpotifyIcon className="mr-2" /> Sign in to Spotify
+//                     </Button>
+//                 </CardContent>
+//             </Card>
+//         </div>
+//     );
+// }
+
+const YoutubePlayer = ({ videoId }: Options) => {
+    const [player, setPlayer] = useState<null | YouTubePlayer>(null);
+    const [controls, setControls] = useState(false);
+    const [end, setEnd] = useState<number | null>(null);
+    const [start, setStart] = useState(0);
+    const [playMode, setPlayMode] = useState(false);
+    const [elapsed, setElapsed] = useState<number>(0);
+
+    const handlePlayMode = () => {
+        if (!player) return;
+        if (playMode) {
+            player.pauseVideo();
+        } else {
+            player.playVideo();
+        }
+        setPlayMode(!playMode);
+    };
+
+    const onPlayerReady: YouTubeProps["onReady"] = async (event) => {
+        // access to player in all event handlers via event.target
+        // event.target.pauseVideo();
+        const target: YouTubePlayer = event.target;
+        setPlayer(target);
+        setEnd(await target.getDuration());
+    };
+
+    useEffect(() => {
+        if (!player) return;
+        (async () => {
+            // setEnd(await player.getDuration());
+        })();
+    }, [playMode]);
+    const opts: YouTubeProps["opts"] = {
+        height: "390",
+        width: "640",
+        playerVars: {
+            // https://developers.google.com/youtube/player_parameters
+            autoplay: 0,
+            loop: 1,
+            // controls: 0,
+        },
+    };
+
+    useEffect(() => {
+        if (!player || !playMode) return;
+        const interval = setInterval(async () => {
+            const elapsed_sec = await player.getCurrentTime(); // this is a promise. dont forget to await
+
+            setElapsed(elapsed_sec);
+        }, 200); // 100 ms refresh. increase it if you don't require millisecond precision
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [player, playMode]);
+
+    useEffect(() => console.log(end), [end]);
+
+    const seekTo = async (timestamp: number) => {
+        if (!player) return;
+        const currentTime = await player.getCurrentTime();
+        console.log(currentTime);
+        player.seekTo(currentTime + timestamp, true);
+        setElapsed(currentTime + timestamp);
+    };
+    const jumpTo = async (timestamp: number) => {
+        if (!player) return;
+        player.seekTo(timestamp, true);
+        setElapsed(timestamp);
+    };
+
+    return (
+        <>
+            <Youtube
+                className="opacity-0 absolute left-96 "
+                videoId={videoId}
+                opts={opts}
+                onReady={onPlayerReady}
+            />
+            <SpotifyPlayer
+                start={start}
+                elapsed={elapsed}
+                jumpTo={jumpTo}
+                end={end}
+                playMode={playMode}
+                seekTo={seekTo}
+                handlePlayMode={handlePlayMode}
+            />
+        </>
+    );
+};
 
 export default function Home() {
-    // const sdk = useSpotify(
-    //     process.env.NEXT_PUBLIC_SPOTIFY_ID!,
-    //     process.env.NEXT_PUBLIC_REDIRECT_TARGET!,
-    //     Scopes.all
-    // );
-    const [sdk, setSDK, isPremiumAccount] = useSpotifyStore((state) => [
-        state.sdk,
-        state.setSDK,
-        state.isPremiumAccount,
-    ]);
-
-    if (sdk && isPremiumAccount === false) {
-        return (
-            <div className="w-full h-full flex items-center justify-center">
-                Sorry, you need Spotify Preimum to use Musigroove
-                <Logout sdk={sdk!} />
-            </div>
-        );
-    }
-
-    if (sdk && isPremiumAccount) {
-        return (
-            <div className="p-2 ">
-                <div className="bg-secondary w-full text-center  text-primary p-2 rounded-lg">
-                    In Development
-                </div>
-                <Button
-                    onClick={async () => {
-                        console.log(await sdk.player.getCurrentlyPlayingTrack());
-                        const devices = await sdk.player.getAvailableDevices();
-
-                        await sdk.player.seekToPosition(10000, devices.devices[0].id!);
-
-                        //         setDeviceId(devices.devices);
-                    }}
-                >
-                    Sign In
-                </Button>
-                <div className="mx-auto flex  justify-end">
-                    <ModeToggle />
-                </div>
-                <div className="flex gap-8 p-4">
-                    <SpotifyPlayer />
-                    <StampCard />
-                    {/* <SpotifyProfile sdk={sdk} /> */}
-
-                    {/* <SpotifyProfile sdk={sdk} /> */}
-                    <Logout sdk={sdk} />
-                </div>
-            </div>
-        );
-    }
     return (
-        <div className="flex justify-center items-center h-full">
-            <Card className="">
-                <CardHeader>
-                    <CardTitle>Login</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Button
-                        onClick={async () => {
-                            if ((await setSDK()) === false) {
-                                toast({
-                                    variant: "destructive",
-                                    title: "Uh oh! Something went wrong.",
-                                    description: "There was a problem with your request.",
-                                });
-                            }
-                        }}
-                        variant="secondary"
-                    >
-                        <SpotifyIcon className="mr-2" /> Sign in to Spotify
-                    </Button>
-                </CardContent>
-            </Card>
+        <div className="p-2 ">
+            <div className="mx-auto flex  justify-end">
+                <ModeToggle />
+            </div>
+            <div className="flex gap-8 p-4">
+                {/* <SpotifyPlayer /> */}
+                <YoutubePlayer videoId="G1Pv-ceq4NE" />
+                {/* <StampCard /> */}
+
+                {/* https://youtu.be/f93Oc67LDe0?si=FE3vphcg4AiPCVnI */}
+
+                {/* <SpotifyProfile sdk={sdk} /> */}
+
+                {/* <SpotifyProfile sdk={sdk} /> */}
+                {/* <Logout sdk={sdk} /> */}
+            </div>
         </div>
     );
 }
@@ -115,473 +232,3 @@ const Logout = ({ sdk }: SpotifySDK) => {
         </>
     );
 };
-
-/**
- * 
- * {
-    "timestamp": 1694997808752,
-    "context": {
-        "external_urls": {
-            "spotify": "https://open.spotify.com/collection/tracks"
-        },
-        "href": "https://api.spotify.com/v1/me/tracks",
-        "type": "collection",
-        "uri": "spotify:user:eswggww5eu0qes3rs778hsrxj:collection"
-    },
-    "progress_ms": 108104,
-    "item": {
-        "album": {
-            "album_type": "album",
-            "artists": [
-                {
-                    "external_urls": {
-                        "spotify": "https://open.spotify.com/artist/4AK6F7OLvEQ5QYCBNiQWHq"
-                    },
-                    "href": "https://api.spotify.com/v1/artists/4AK6F7OLvEQ5QYCBNiQWHq",
-                    "id": "4AK6F7OLvEQ5QYCBNiQWHq",
-                    "name": "One Direction",
-                    "type": "artist",
-                    "uri": "spotify:artist:4AK6F7OLvEQ5QYCBNiQWHq"
-                }
-            ],
-            "available_markets": [
-                "AR",
-                "AU",
-                "AT",
-                "BE",
-                "BO",
-                "BR",
-                "BG",
-                "CA",
-                "CL",
-                "CO",
-                "CR",
-                "CY",
-                "CZ",
-                "DK",
-                "DO",
-                "DE",
-                "EC",
-                "EE",
-                "SV",
-                "FI",
-                "FR",
-                "GR",
-                "GT",
-                "HN",
-                "HK",
-                "HU",
-                "IS",
-                "IE",
-                "IT",
-                "LV",
-                "LT",
-                "LU",
-                "MY",
-                "MT",
-                "MX",
-                "NL",
-                "NZ",
-                "NI",
-                "NO",
-                "PA",
-                "PY",
-                "PE",
-                "PH",
-                "PL",
-                "PT",
-                "SG",
-                "SK",
-                "ES",
-                "SE",
-                "CH",
-                "TW",
-                "TR",
-                "UY",
-                "US",
-                "GB",
-                "AD",
-                "LI",
-                "MC",
-                "ID",
-                "JP",
-                "TH",
-                "VN",
-                "RO",
-                "IL",
-                "ZA",
-                "SA",
-                "AE",
-                "BH",
-                "QA",
-                "OM",
-                "KW",
-                "EG",
-                "MA",
-                "DZ",
-                "TN",
-                "LB",
-                "JO",
-                "PS",
-                "IN",
-                "BY",
-                "KZ",
-                "MD",
-                "UA",
-                "AL",
-                "BA",
-                "HR",
-                "ME",
-                "MK",
-                "RS",
-                "SI",
-                "KR",
-                "BD",
-                "PK",
-                "LK",
-                "GH",
-                "KE",
-                "NG",
-                "TZ",
-                "UG",
-                "AG",
-                "AM",
-                "BS",
-                "BB",
-                "BZ",
-                "BT",
-                "BW",
-                "BF",
-                "CV",
-                "CW",
-                "DM",
-                "FJ",
-                "GM",
-                "GE",
-                "GD",
-                "GW",
-                "GY",
-                "HT",
-                "JM",
-                "KI",
-                "LS",
-                "LR",
-                "MW",
-                "MV",
-                "ML",
-                "MH",
-                "FM",
-                "NA",
-                "NR",
-                "NE",
-                "PW",
-                "PG",
-                "WS",
-                "SM",
-                "ST",
-                "SN",
-                "SC",
-                "SL",
-                "SB",
-                "KN",
-                "LC",
-                "VC",
-                "SR",
-                "TL",
-                "TO",
-                "TT",
-                "TV",
-                "VU",
-                "AZ",
-                "BN",
-                "BI",
-                "KH",
-                "CM",
-                "TD",
-                "KM",
-                "GQ",
-                "SZ",
-                "GA",
-                "GN",
-                "KG",
-                "LA",
-                "MO",
-                "MR",
-                "MN",
-                "NP",
-                "RW",
-                "TG",
-                "UZ",
-                "ZW",
-                "BJ",
-                "MG",
-                "MU",
-                "MZ",
-                "AO",
-                "CI",
-                "DJ",
-                "ZM",
-                "CD",
-                "CG",
-                "IQ",
-                "LY",
-                "TJ",
-                "VE",
-                "ET",
-                "XK"
-            ],
-            "external_urls": {
-                "spotify": "https://open.spotify.com/album/4gCNyS7pidfK3rKWhB3JOY"
-            },
-            "href": "https://api.spotify.com/v1/albums/4gCNyS7pidfK3rKWhB3JOY",
-            "id": "4gCNyS7pidfK3rKWhB3JOY",
-            "images": [
-                {
-                    "height": 640,
-                    "url": "https://i.scdn.co/image/ab67616d0000b273d304ba2d71de306812eebaf4",
-                    "width": 640
-                },
-                {
-                    "height": 300,
-                    "url": "https://i.scdn.co/image/ab67616d00001e02d304ba2d71de306812eebaf4",
-                    "width": 300
-                },
-                {
-                    "height": 64,
-                    "url": "https://i.scdn.co/image/ab67616d00004851d304ba2d71de306812eebaf4",
-                    "width": 64
-                }
-            ],
-            "name": "FOUR (Deluxe)",
-            "release_date": "2014-11-17",
-            "release_date_precision": "day",
-            "total_tracks": 16,
-            "type": "album",
-            "uri": "spotify:album:4gCNyS7pidfK3rKWhB3JOY"
-        },
-        "artists": [
-            {
-                "external_urls": {
-                    "spotify": "https://open.spotify.com/artist/4AK6F7OLvEQ5QYCBNiQWHq"
-                },
-                "href": "https://api.spotify.com/v1/artists/4AK6F7OLvEQ5QYCBNiQWHq",
-                "id": "4AK6F7OLvEQ5QYCBNiQWHq",
-                "name": "One Direction",
-                "type": "artist",
-                "uri": "spotify:artist:4AK6F7OLvEQ5QYCBNiQWHq"
-            }
-        ],
-        "available_markets": [
-            "AR",
-            "AU",
-            "AT",
-            "BE",
-            "BO",
-            "BR",
-            "BG",
-            "CA",
-            "CL",
-            "CO",
-            "CR",
-            "CY",
-            "CZ",
-            "DK",
-            "DO",
-            "DE",
-            "EC",
-            "EE",
-            "SV",
-            "FI",
-            "FR",
-            "GR",
-            "GT",
-            "HN",
-            "HK",
-            "HU",
-            "IS",
-            "IE",
-            "IT",
-            "LV",
-            "LT",
-            "LU",
-            "MY",
-            "MT",
-            "MX",
-            "NL",
-            "NZ",
-            "NI",
-            "NO",
-            "PA",
-            "PY",
-            "PE",
-            "PH",
-            "PL",
-            "PT",
-            "SG",
-            "SK",
-            "ES",
-            "SE",
-            "CH",
-            "TW",
-            "TR",
-            "UY",
-            "US",
-            "GB",
-            "AD",
-            "LI",
-            "MC",
-            "ID",
-            "JP",
-            "TH",
-            "VN",
-            "RO",
-            "IL",
-            "ZA",
-            "SA",
-            "AE",
-            "BH",
-            "QA",
-            "OM",
-            "KW",
-            "EG",
-            "MA",
-            "DZ",
-            "TN",
-            "LB",
-            "JO",
-            "PS",
-            "IN",
-            "BY",
-            "KZ",
-            "MD",
-            "UA",
-            "AL",
-            "BA",
-            "HR",
-            "ME",
-            "MK",
-            "RS",
-            "SI",
-            "KR",
-            "BD",
-            "PK",
-            "LK",
-            "GH",
-            "KE",
-            "NG",
-            "TZ",
-            "UG",
-            "AG",
-            "AM",
-            "BS",
-            "BB",
-            "BZ",
-            "BT",
-            "BW",
-            "BF",
-            "CV",
-            "CW",
-            "DM",
-            "FJ",
-            "GM",
-            "GE",
-            "GD",
-            "GW",
-            "GY",
-            "HT",
-            "JM",
-            "KI",
-            "LS",
-            "LR",
-            "MW",
-            "MV",
-            "ML",
-            "MH",
-            "FM",
-            "NA",
-            "NR",
-            "NE",
-            "PW",
-            "PG",
-            "WS",
-            "SM",
-            "ST",
-            "SN",
-            "SC",
-            "SL",
-            "SB",
-            "KN",
-            "LC",
-            "VC",
-            "SR",
-            "TL",
-            "TO",
-            "TT",
-            "TV",
-            "VU",
-            "AZ",
-            "BN",
-            "BI",
-            "KH",
-            "CM",
-            "TD",
-            "KM",
-            "GQ",
-            "SZ",
-            "GA",
-            "GN",
-            "KG",
-            "LA",
-            "MO",
-            "MR",
-            "MN",
-            "NP",
-            "RW",
-            "TG",
-            "UZ",
-            "ZW",
-            "BJ",
-            "MG",
-            "MU",
-            "MZ",
-            "AO",
-            "CI",
-            "DJ",
-            "ZM",
-            "CD",
-            "CG",
-            "IQ",
-            "LY",
-            "TJ",
-            "VE",
-            "ET",
-            "XK"
-        ],
-        "disc_number": 1,
-        "duration_ms": 226600,
-        "explicit": false,
-        "external_ids": {
-            "isrc": "GBHMU1400165"
-        },
-        "external_urls": {
-            "spotify": "https://open.spotify.com/track/5O2P9iiztwhomNh8xkR9lJ"
-        },
-        "href": "https://api.spotify.com/v1/tracks/5O2P9iiztwhomNh8xkR9lJ",
-        "id": "5O2P9iiztwhomNh8xkR9lJ",
-        "is_local": false,
-        "name": "Night Changes",
-        "popularity": 88,
-        "preview_url": "https://p.scdn.co/mp3-preview/359be833b46b250c696bbb64caa5dc91f2a38c6a?cid=954913d13a4e4e1dba7dd78c097e7e97",
-        "track_number": 7,
-        "type": "track",
-        "uri": "spotify:track:5O2P9iiztwhomNh8xkR9lJ"
-    },
-    "currently_playing_type": "track",
-    "actions": {
-        "disallows": {
-            "resuming": true
-        }
-    },
-    "is_playing": true
-}
- */

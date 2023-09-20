@@ -20,9 +20,9 @@ export function SkipTrackIcon(svgProps: SVGProps<SVGSVGElement>) {
 export function PlayTrackIcon(svgProps: SVGProps<SVGSVGElement>) {
     return (
         <svg
-            width="47"
-            height="47"
-            viewBox="0 0 47 47"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             {...svgProps}
@@ -30,8 +30,8 @@ export function PlayTrackIcon(svgProps: SVGProps<SVGSVGElement>) {
             <path
                 fillRule="evenodd"
                 clipRule="evenodd"
-                d="M23.5 42.3C33.883 42.3 42.3 33.8829 42.3 23.5C42.3 13.117 33.883 4.7 23.5 4.7C13.117 4.7 4.7 13.117 4.7 23.5C4.7 33.8829 13.117 42.3 23.5 42.3ZM22.4535 16.8447C21.7324 16.3639 20.8053 16.3191 20.0411 16.7281C19.277 17.137 18.8 17.9333 18.8 18.8V28.2C18.8 29.0667 19.277 29.863 20.0411 30.2719C20.8053 30.6809 21.7324 30.6361 22.4535 30.1553L29.5035 25.4553C30.1573 25.0195 30.55 24.2857 30.55 23.5C30.55 22.7143 30.1573 21.9805 29.5035 21.5447L22.4535 16.8447Z"
-                fill="#4ADE80"
+                d="M12 21.6C17.302 21.6 21.6 17.3019 21.6 12C21.6 6.69807 17.302 2.4 12 2.4C6.69809 2.4 2.40002 6.69807 2.40002 12C2.40002 17.3019 6.69809 21.6 12 21.6ZM11.4657 8.60154C11.0974 8.35606 10.624 8.33317 10.2338 8.54199C9.84361 8.75082 9.60002 9.15745 9.60002 9.6V14.4C9.60002 14.8426 9.84361 15.2492 10.2338 15.458C10.624 15.6668 11.0974 15.6439 11.4657 15.3985L15.0657 12.9985C15.3995 12.7759 15.6 12.4012 15.6 12C15.6 11.5988 15.3995 11.2241 15.0657 11.0015L11.4657 8.60154Z"
+                fill="current"
             />
         </svg>
     );
@@ -56,16 +56,26 @@ export function SpotifyIcon(svgProps: SVGProps<SVGSVGElement>) {
 export function ForwardFiveIcon(svgProps: SVGProps<SVGSVGElement>) {
     return (
         <svg
-            width="34"
-            height="34"
-            viewBox="0 0 34 34"
-            fill="white"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
             xmlns="http://www.w3.org/2000/svg"
             {...svgProps}
         >
             <path
-                d="M16.2917 4.25C20.0458 4.25 23.4458 5.66667 26.0667 7.93333L29.75 4.25V14.1667H19.8333L23.545 10.455C21.5758 8.81167 19.0683 7.79167 16.2917 7.79167C11.2767 7.79167 7.0125 11.0642 5.525 15.5833L2.1675 14.4783C4.13667 8.5425 9.70417 4.25 16.2917 4.25ZM12.75 17H21.25V19.8333H15.5833V22.6667H18.4167C19.1681 22.6667 19.8888 22.9652 20.4201 23.4965C20.9515 24.0279 21.25 24.7486 21.25 25.5V28.3333C21.25 29.9058 19.9892 31.1667 18.4167 31.1667H12.75V28.3333H18.4167V25.5H12.75V17Z"
-                fill="current"
+                d="M9 18C7.4087 18 5.88258 17.3679 4.75736 16.2426C3.63214 15.1174 3 13.5913 3 12C3 10.4087 3.63214 8.88258 4.75736 7.75736C5.88258 6.63214 7.4087 6 9 6H20M13 20H15C15.2652 20 15.5196 19.8946 15.7071 19.7071C15.8946 19.5196 16 19.2652 16 19V18C16 17.7348 15.8946 17.4804 15.7071 17.2929C15.5196 17.1054 15.2652 17 15 17H13V14H16"
+                stroke="current"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M17 9L20 6L17 3"
+                stroke="current"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );
@@ -73,15 +83,97 @@ export function ForwardFiveIcon(svgProps: SVGProps<SVGSVGElement>) {
 export function BackwardFiveIcon(svgProps: SVGProps<SVGSVGElement>) {
     return (
         <svg
-            width="34"
-            height="34"
-            viewBox="0 0 34 34"
-            fill="white"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
             xmlns="http://www.w3.org/2000/svg"
             {...svgProps}
         >
             <path
-                d="M17.7083 4.25C24.2958 4.25 29.8633 8.5425 31.8325 14.4783L28.475 15.5833C26.9875 11.0642 22.7233 7.79167 17.7083 7.79167C14.9317 7.79167 12.4242 8.81167 10.455 10.455L14.1667 14.1667H4.25V4.25L7.93333 7.93333C10.5542 5.66667 13.9542 4.25 17.7083 4.25ZM12.75 17H21.25V19.8333H15.5833V22.6667H18.4167C19.1681 22.6667 19.8888 22.9652 20.4201 23.4965C20.9515 24.0279 21.25 24.7486 21.25 25.5V28.3333C21.25 29.9058 19.9892 31.1667 18.4167 31.1667H12.75V28.3333H18.4167V25.5H12.75V17Z"
+                d="M15 18C16.5913 18 18.1174 17.3679 19.2426 16.2426C20.3679 15.1174 21 13.5913 21 12C21 10.4087 20.3679 8.88258 19.2426 7.75736C18.1174 6.63214 16.5913 6 15 6H4"
+                stroke="current"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M7 9L4 6L7 3M8 20H10C10.2652 20 10.5196 19.8946 10.7071 19.7071C10.8946 19.5196 11 19.2652 11 19V18C11 17.7348 10.8946 17.4804 10.7071 17.2929C10.5196 17.1054 10.2652 17 10 17H8V14H11"
+                stroke="current"
+                fill="current"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
+export function BackwardTenIcon(svgProps: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...svgProps}
+        >
+            <path
+                d="M7 9L4 6L7 3"
+                stroke="current"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M15.997 17.918C17.4781 17.6646 18.8102 16.8649 19.7302 15.6769C20.6502 14.4888 21.0911 12.999 20.9658 11.5016C20.8406 10.0043 20.1582 8.60838 19.0536 7.58974C17.9491 6.5711 16.5026 6.00383 15 6H4M6 14V20M9 15.5V18.5C9 18.8978 9.15804 19.2794 9.43934 19.5607C9.72064 19.842 10.1022 20 10.5 20C10.8978 20 11.2794 19.842 11.5607 19.5607C11.842 19.2794 12 18.8978 12 18.5V15.5C12 15.1022 11.842 14.7206 11.5607 14.4393C11.2794 14.158 10.8978 14 10.5 14C10.1022 14 9.72064 14.158 9.43934 14.4393C9.15804 14.7206 9 15.1022 9 15.5Z"
+                stroke="current"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
+export function ForwardTenIcon(svgProps: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...svgProps}
+        >
+            <path
+                d="M17 9L20 6L17 3"
+                stroke="current"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M8 17.918C6.60133 17.6822 5.33151 16.9582 4.4161 15.8748C3.50069 14.7913 2.99895 13.4184 3 12C3 10.4087 3.63214 8.88258 4.75736 7.75736C5.88258 6.63214 7.4087 6 9 6H20M12 14V20M15 15.5V18.5C15 18.8978 15.158 19.2794 15.4393 19.5607C15.7206 19.842 16.1022 20 16.5 20C16.8978 20 17.2794 19.842 17.5607 19.5607C17.842 19.2794 18 18.8978 18 18.5V15.5C18 15.1022 17.842 14.7206 17.5607 14.4393C17.2794 14.158 16.8978 14 16.5 14C16.1022 14 15.7206 14.158 15.4393 14.4393C15.158 14.7206 15 15.1022 15 15.5Z"
+                stroke="current"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
+export function PauseTrackIcon(svgProps: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...svgProps}
+        >
+            <path
+                d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM11 16H9V8H11V16ZM15 16H13V8H15V16Z"
                 fill="current"
             />
         </svg>
