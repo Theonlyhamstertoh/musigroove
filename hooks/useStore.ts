@@ -4,7 +4,9 @@ import initializeSpotify from "./useSpotify";
 
 interface StampState {
     timestamps: Timestamp[];
-    addStamp: (stamp: Timestamp) => void;
+    openPopover: boolean;
+    handleOpenPopover: () => void;
+    addStamp: (stamp: number, label: string) => void;
     removeStamp: (id: string) => void;
     editStamp: (id: string, time: number, label: string) => void;
     findStamp: (id: string) => void;
@@ -53,7 +55,12 @@ export const useYoutubeStore = create<YoutubeState>()((set, get) => ({
 
 export const useStampStore = create<StampState>()((set, get) => ({
     timestamps: [],
-    addStamp: (stamp) => set((state) => ({ timestamps: [...state.timestamps, stamp] })),
+    openPopover: false,
+    handleOpenPopover: () => set((state) => ({ openPopover: !state.openPopover })),
+    addStamp: (time, label = "") =>
+        set((state) => ({
+            timestamps: [...state.timestamps, { time, label, id: crypto.randomUUID() }],
+        })),
     removeStamp: (id) => {
         set((state) => {
             const filteredStamps = state.timestamps.filter((stamp) => stamp.id !== id);
