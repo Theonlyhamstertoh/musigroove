@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { link } from "fs";
 
+import { Analytics } from "@vercel/analytics/react";
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800"] });
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         </Link>
                     </Button>
                 </footer>
+                <Analytics />
             </body>
         </html>
     );
