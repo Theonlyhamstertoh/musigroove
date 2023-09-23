@@ -76,7 +76,7 @@ export const YoutubePlayer = ({}: Options) => {
         width: "128",
         playerVars: {
             // https://developers.google.com/youtube/player_parameters
-            autoplay: 1,
+            autoplay: 0,
             loop: 1,
             controls: 0,
         },

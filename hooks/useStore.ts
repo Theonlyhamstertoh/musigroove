@@ -49,7 +49,7 @@ interface YoutubeState {
 }
 
 export const useYoutubeStore = create<YoutubeState>()((set, get) => ({
-    videoId: "",
+    videoId: "G1Pv-ceq4NE",
     setVideoId: (id) => set(() => ({ videoId: id })),
 }));
 
