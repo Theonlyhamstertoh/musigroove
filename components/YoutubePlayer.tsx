@@ -176,8 +176,8 @@ export const YoutubePlayer = ({}: Options) => {
                         />
 
                         <div className="">
-                            <p className="text-lg font-medium leading-none">Title coming..</p>
-                            <p className="mt-2.5 text-sm text-muted-foreground">Cool singers</p>
+                            <p className="text-lg font-medium leading-none">I Like Dat</p>
+                            <p className="mt-2.5 text-sm text-muted-foreground">Kehlani, T-Pain</p>
                             <Button
                                 variant="secondary"
                                 className="mt-3 md:w-36 overflow-x-clip flex "
